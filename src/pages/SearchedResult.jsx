@@ -1,11 +1,18 @@
 import Header from "../components/Header";
-import { Link,useSearchParams } from 'react-router-dom';
+import { Link,useSearchParams ,useNavigate} from 'react-router-dom';
 import useFetch from '../useFetch'
 
 const SearchedResult = ()=>{
 
     const [searchParams] = useSearchParams()
     const searchValue = searchParams.get('search')
+
+    //code for navigating back to previous URL
+    const navigate = useNavigate()
+
+    const goBack=()=>{
+        navigate(-1);
+    }
 
     const tags = ['marketing','digital','sports','tech','geopolitics','culture','literature']
     const capitalize = (str)=>{
@@ -45,7 +52,16 @@ const SearchedResult = ()=>{
     }
     if (!data) return <h2 className='text-center py-3'>No events found.</h2>
 
-    //console.log(data)
+    console.log(data)
+
+    if(data.error) {
+        return (
+            <>
+             <h2 className='text-center py-3'>Sorry, no results found. </h2>
+             <p className="text-center"><button className="btn btn-info" onClick={goBack}>Go Back</button></p>
+            </>
+       )
+    }
 
     let finalData = []
 
@@ -53,6 +69,8 @@ const SearchedResult = ()=>{
         finalData = [...data]
     }
     else finalData.push(data)
+
+    
 
     const eventListings = finalData.map(d => (
         <div key={d._id} className='col-md-4 mt-3'>
